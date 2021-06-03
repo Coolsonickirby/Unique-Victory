@@ -1,0 +1,29 @@
+[package]
+name = "character-result"
+version = "0.1.0"
+authors = ["Ali Hussain (Coolsonickirby) <alihussain2001@gmail.com>"]
+edition = "2018"
+
+[package.metadata.skyline]
+titleid = "01006A800016E000"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+lazy_static = "1.4"
+skyline = { git = "https://github.com/ultimate-research/skyline-rs.git" }
+skyline_smash = { git = "https://github.com/ultimate-research/skyline-smash.git" }
+acmd = { git = "https://github.com/ultimate-research/skyline-acmd.git" }
+arcropolis-api = { git = "https://github.com/Raytwo/arcropolis_api" }
+walkdir = "2.3.2"
+toml = "0.5.8"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+lto = true
+
+
