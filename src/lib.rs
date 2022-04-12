@@ -147,6 +147,7 @@ pub fn get_character_name(id: i32) -> &'static str {
         90 => "eflame",
         91 => "elight",
         92 => "demon",
+        93 => "trail",
         110 => "ice_climber",
         111 => "zenigame",
         112 => "fushigisou",
@@ -209,11 +210,6 @@ fn file_callback(hash: u64, data: &mut [u8]) -> Option<usize> {
             &FILES_CONFIG.lock().unwrap().get(&hash).unwrap().game_path
         );
 
-        let original_file = format!(
-            "{}/Default/{}",
-            STARTING_DIR,
-            &FILES_CONFIG.lock().unwrap().get(&hash).unwrap().game_path
-        );
         println!("Physical Path: {}", physical_path);
 
         match std::fs::read(physical_path) {
@@ -222,14 +218,7 @@ fn file_callback(hash: u64, data: &mut [u8]) -> Option<usize> {
                 Some(file.len())
             }
             Err(_err) => {
-                match std::fs::read(original_file){
-                    Ok(default) => {
-                        data[..default.len()].copy_from_slice(&default);
-        
-                        Some(default.len())
-                    },
-                    Err(_err) => None
-                }
+                load_original_file(hash, data)
             }
         }
     }
@@ -288,17 +277,10 @@ fn stream_callback(hash: u64) -> Option<String> {
             &FILES_CONFIG.lock().unwrap().get(&hash).unwrap().normal_path
         );
 
-        let original_file = format!(
-            "{}/Default/{}",
-            STARTING_DIR,
-            &FILES_CONFIG.lock().unwrap().get(&hash).unwrap().normal_path
-        );
         println!("Physical Path: {}", physical_path);
 
         if std::fs::metadata(&physical_path).is_ok() {
             Some(physical_path)
-        }else if std::fs::metadata(&original_file).is_ok() {
-            Some(original_file)
         }else {
             None
         }
