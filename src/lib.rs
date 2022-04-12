@@ -1,5 +1,7 @@
 #![feature(proc_macro_hygiene)]
 
+
+use smashline::*;
 mod config;
 use arcropolis_api::*;
 use config::*;
@@ -31,6 +33,7 @@ pub static mut VICTOR: usize = 0;
 pub static mut FIGHTER_MANAGER_ADDR: usize = 0;
 
 // Use this for general per-frame fighter-level hooks
+#[fighter_frame_callback]
 pub fn once_per_fighter_frame(fighter: &mut L2CFighterCommon) {
     unsafe {
         let lua_state = fighter.lua_state_agent;
@@ -369,5 +372,5 @@ pub fn main() {
         CHARCTER_CONFIG.lock().unwrap().entries
     );
     
-    acmd::add_custom_hooks!(once_per_fighter_frame);
+    install_agent_frame_callbacks!(once_per_fighter_frame);
 }
